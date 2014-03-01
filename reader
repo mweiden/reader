@@ -1,6 +1,7 @@
 #!/bin/bash
 
 red='\x1B[0;31m'
+gray='\x1B[0;30m'
 NC='\x1B[0m'
 
 readonly leader="                    "
@@ -26,10 +27,10 @@ while read line; do
     prelenpp=$(($prefixlen + 1))
     leaderlen=$((20 - $prefixlen))
 
-    echo -ne "\n\n\n${leader:0:$leaderlen}"
-    echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n\n\n"
+    echo -ne "\n\n$leader${gray}|${NC}\n${leader:0:$leaderlen}"
+    echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n$leader${gray}|${NC}"
 
-    sleeplen=$((120 + 5 * $wordlen))
+    sleeplen=$((130 + 7 * $wordlen))
     sleep "0.$sleeplen"
   done
 done
