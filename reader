@@ -5,6 +5,10 @@ NC='\x1B[0m'
 
 readonly leader="                    "
 
+clear
+echo -e "\n\n\n$leader${red}ready?${NC}"
+sleep 1
+
 while read line; do
   for word in $line; do
     clear
