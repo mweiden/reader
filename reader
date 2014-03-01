@@ -1,0 +1,33 @@
+#!/bin/bash
+
+red='\x1B[0;31m'
+NC='\x1B[0m'
+
+readonly leader="                    "
+
+while read line; do
+  for word in $line; do
+    clear
+
+    wordlen=${#word}
+
+    if [ $wordlen = 1 ]; then
+      prefixlen=0
+    elif [ $wordlen -le 3 ]; then
+      prefixlen=1
+    else
+      prefixlen=$(($wordlen / 2 - 1))
+    fi
+
+    prelenpp=$(($prefixlen + 1))
+    leaderlen=$((20 - $prefixlen))
+
+    echo -ne "\n\n\n${leader:0:$leaderlen}"
+    echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n\n\n"
+
+    sleeplen=$((120 + 5 * $wordlen))
+    sleep "0.$sleeplen"
+  done
+done
+
+echo "whew :)"
