@@ -10,8 +10,15 @@ clear
 echo -e "\n\n\n$leader${red}ready?${NC}"
 sleep 1
 
-while read line; do
-  for word in $line; do
+DONE=false
+
+while read LINE; do
+
+  if [ -z "$LINE" ]; then
+    LINE="¶"
+  fi
+
+  for word in $LINE; do
     clear
 
     wordlen=${#word}
@@ -31,7 +38,7 @@ while read line; do
     echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n$leader${gray}|${NC}"
 
     sleeplen=$((130 + 7 * $wordlen))
-    sleep "0.$sleeplen"
+    sleep "1.$sleeplen"
   done
 done
 
