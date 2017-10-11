@@ -4,6 +4,14 @@ red='\x1B[0;31m'
 gray='\x1B[0;30m'
 NC='\x1B[0m'
 
+tput civis
+
+function finish {
+  tput cnorm
+}
+
+trap finish EXIT
+
 readonly leader="                    "
 
 clear
@@ -15,10 +23,10 @@ DONE=false
 while read LINE; do
 
   if [ -z "$LINE" ]; then
-    LINE="¶"
+    continue
   fi
 
-  for word in $LINE; do
+  for word in $LINE ¶ ; do
     clear
 
     wordlen=${#word}
@@ -37,8 +45,12 @@ while read LINE; do
     echo -ne "\n\n$leader${gray}|${NC}\n${leader:0:$leaderlen}"
     echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n$leader${gray}|${NC}"
 
-    sleeplen=$((130 + 7 * $wordlen))
-    sleep "0.$sleeplen"
+    if [ $word = "¶" ]; then
+      sleep "0.5"
+    else
+      sleeplen=$((130 + 7 * $wordlen))
+      sleep "0.$sleeplen"
+    fi
   done
 done
 
