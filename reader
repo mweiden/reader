@@ -38,7 +38,7 @@ while read LINE; do
     echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n$leader${gray}|${NC}"
 
     sleeplen=$((130 + 7 * $wordlen))
-    sleep "1.$sleeplen"
+    sleep "0.$sleeplen"
   done
 done
 
