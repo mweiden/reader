@@ -2,6 +2,7 @@
 
 red='\x1B[0;31m'
 gray='\x1B[0;30m'
+#dark_gray='\x1B[38;5;232m'
 NC='\x1B[0m'
 
 tput civis
@@ -12,7 +13,7 @@ function finish {
 
 trap finish EXIT
 
-readonly leader="                    "
+readonly leader="                        "
 
 clear
 echo -e "\n\n\n$leader${red}ready?${NC}"
@@ -20,15 +21,22 @@ sleep 1
 
 DONE=false
 
-while read LINE; do
+while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
 
   if [ -z "$LINE" ]; then
     continue
   fi
 
-  for word in $LINE ¶ ; do
+  ARRAY=($LINE ¶)
+
+  for i in "${!ARRAY[@]}" ; do
     clear
 
+    lastword=`[[ $(($i - 1)) > 0 ]] && echo -n ${ARRAY[$(($i - 1))]} || echo -n ""`
+    word="${ARRAY[$i]}"
+    nextword=`[[ $(($i + 1)) < ${#ARRAY[@]} ]] && echo -n ${ARRAY[$(($i + 1))]} || echo -n ""`
+
+    lastwordlen=${#lastword}
     wordlen=${#word}
 
     if [ $wordlen = 1 ]; then
@@ -36,14 +44,17 @@ while read LINE; do
     elif [ $wordlen -le 3 ]; then
       prefixlen=1
     else
-      prefixlen=$(($wordlen / 2 - 1))
+      prefixlen=$(( $wordlen / 2 - 1))
     fi
 
     prelenpp=$(($prefixlen + 1))
-    leaderlen=$((20 - $prefixlen))
+    leaderlen=$(( ${#leader} - $prefixlen - 1 - $lastwordlen ))
 
     echo -ne "\n\n$leader${gray}|${NC}\n${leader:0:$leaderlen}"
-    echo -e "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}\n$leader${gray}|${NC}"
+    echo -ne "${gray}${lastword}${NC} "
+    echo -ne "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}"
+    echo -e " ${gray}${nextword}${NC}"
+    echo -e "$leader${gray}|${NC}"
 
     if [ $word = "¶" ]; then
       sleep "0.5"
@@ -53,5 +64,3 @@ while read LINE; do
     fi
   done
 done
-
-echo "whew :)"
