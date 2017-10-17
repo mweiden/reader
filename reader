@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 red='\x1B[0;31m'
 gray='\x1B[0;30m'
 #dark_gray='\x1B[38;5;232m'
@@ -13,10 +13,15 @@ function finish {
 
 trap finish EXIT
 
-readonly leader="                        "
+function leader {
+  n=$(( $(tput cols) / 2 - $1 - 1 ))
+  s=$(printf "%-${n}s" " ")
+  echo -n "${s}"
+}
 
 clear
-echo -e "\n\n\n$leader${red}ready?${NC}"
+ready_leader=$(leader 2)
+echo -e "\n\n\n${ready_leader}${red}ready?${NC}"
 sleep 1
 
 DONE=false
@@ -30,7 +35,6 @@ while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
   ARRAY=($LINE ¶)
 
   for i in "${!ARRAY[@]}" ; do
-    clear
 
     lastword=`[[ $(($i - 1)) > 0 ]] && echo -n ${ARRAY[$(($i - 1))]} || echo -n ""`
     word="${ARRAY[$i]}"
@@ -44,17 +48,20 @@ while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
     elif [ $wordlen -le 3 ]; then
       prefixlen=1
     else
-      prefixlen=$(( $wordlen / 2 - 1))
+      prefixlen=$(( $wordlen / 2 - 1 ))
     fi
 
     prelenpp=$(($prefixlen + 1))
-    leaderlen=$(( ${#leader} - $prefixlen - 1 - $lastwordlen ))
+    word_leader=$(leader $(( $prefixlen + 1 + $lastwordlen )))
+    crosshair_leader=$(leader 0)
 
-    echo -ne "\n\n$leader${gray}|${NC}\n${leader:0:$leaderlen}"
-    echo -ne "${gray}${lastword}${NC} "
-    echo -ne "${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}"
-    echo -e " ${gray}${nextword}${NC}"
-    echo -e "$leader${gray}|${NC}"
+    msg="\n\n${crosshair_leader}${gray}|${NC}\n"
+    msg="${msg}${word_leader}${gray}${lastword}${NC} "
+    msg="${msg}${word:0:$prefixlen}${red}${word:$prefixlen:1}${NC}${word:$prelenpp}"
+    msg="${msg} ${gray}${nextword}${NC}\n"
+    msg="${msg}${crosshair_leader}${gray}|${NC}"
+    clear
+    echo -e "${msg}"
 
     if [ $word = "¶" ]; then
       sleep "0.5"
