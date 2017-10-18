@@ -5,4 +5,12 @@ reader
 
 You can read stuff like this
 
-    ./reader < sometext.txt
+```bash
+./reader < sometext.txt
+```
+    
+If you have `pbpaste` the command below is easiest when copying from other sources.
+
+```bash
+pbpaste | reader
+```
