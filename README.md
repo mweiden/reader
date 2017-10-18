@@ -14,6 +14,6 @@ If you have `pbpaste` the command below is easiest when copying from other sourc
 pbpaste | reader
 ```
 
-## Color theme support
+## Color theme
 
 Reader, as it is currently configured, is best used with the [Solarized Dark](http://ethanschoonover.com/solarized) color theme.
